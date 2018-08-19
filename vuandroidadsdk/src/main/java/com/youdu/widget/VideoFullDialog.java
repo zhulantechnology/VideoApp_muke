@@ -40,7 +40,7 @@ public class VideoFullDialog extends Dialog implements ADVideoPlayerListener {
     private ImageView mBackButton;
 
     private AdValue mXAdInstance;
-    private int mPosition;
+    private int mPosition; // 从小屏到全屏时视频的播放位置
     private FullToSmallListener mListener;
     private boolean isFirst = true;
     //动画要执行的平移值
@@ -51,7 +51,7 @@ public class VideoFullDialog extends Dialog implements ADVideoPlayerListener {
 
     public VideoFullDialog(Context context, CustomVideoView mraidView, AdValue instance,
                            int position) {
-        super(context, R.style.dialog_full_screen);
+        super(context, R.style.dialog_full_screen); // 通过style的设置，使我们的对话框是全屏的
         mContext = context;
         mXAdInstance = instance;
         mPosition = position;
@@ -72,6 +72,7 @@ public class VideoFullDialog extends Dialog implements ADVideoPlayerListener {
         mStartBundle = bundle;
     }
 
+    // 注入事件监听类
     public void setListener(FullToSmallListener listener) {
         this.mListener = listener;
     }
@@ -102,7 +103,7 @@ public class VideoFullDialog extends Dialog implements ADVideoPlayerListener {
         });
         mRootView.setVisibility(View.INVISIBLE);
 
-        mVideoView.setListener(this);
+        mVideoView.setListener(this); // 设置事件监听为当前的对话框
         mVideoView.mute(false);
         mParentView.addView(mVideoView);
         mParentView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -116,14 +117,17 @@ public class VideoFullDialog extends Dialog implements ADVideoPlayerListener {
         });
     }
 
+    //焦点状态改变时的回调
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         LogUtils.i(TAG, "onWindowFocusChanged");
         mVideoView.isShowFullBtn(false); //防止第一次，有些手机仍显示全屏按钮
         if (!hasFocus) {
+            // 未取得焦点时逻辑
             mPosition = mVideoView.getCurrentPosition();
             mVideoView.pauseForFullScreen();
         } else {
+            // 取得焦点时的逻辑
             if (isFirst) { //为了适配某些手机不执行seekandresume中的播放方法
                 mVideoView.seekAndResume(mPosition);
             } else {
@@ -133,6 +137,7 @@ public class VideoFullDialog extends Dialog implements ADVideoPlayerListener {
         isFirst = false;
     }
 
+    // dialog销毁的时候调用
     @Override
     public void dismiss() {
         LogUtils.e(TAG, "dismiss");
@@ -276,8 +281,9 @@ public class VideoFullDialog extends Dialog implements ADVideoPlayerListener {
 
     }
 
+    // 与我们的业务逻辑层(VideoAdSlot)进行通信
     public interface FullToSmallListener {
-        void getCurrentPlayPosition(int position);
+        void getCurrentPlayPosition(int position); // 全屏播放中点击关闭按钮或者back键时回调
 
         void playComplete();//全屏播放结束时回调
     }

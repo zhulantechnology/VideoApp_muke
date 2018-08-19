@@ -116,6 +116,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             mListView.addHeaderView(new HomeHeaderLayout(mContext, mRecommandData.data.head));
             mAdapter = new CourseAdapter(mContext, mRecommandData.data.list);
             mListView.setAdapter(mAdapter);
+            // 第三步(ad sdk)： 为listview添加滑动事件监听
             mListView.setOnScrollListener(new OnScrollListener() {
                 @Override
                 public void onScrollStateChanged(AbsListView view, int scrollState) {

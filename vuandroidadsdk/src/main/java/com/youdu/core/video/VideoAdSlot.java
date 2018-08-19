@@ -31,7 +31,7 @@ public class VideoAdSlot implements ADVideoPlayerListener {
      * UI
      */
     private CustomVideoView mVideoView;
-    private ViewGroup mParentView;
+    private ViewGroup mParentView; // 要添加到的父容器
     /**
      * Data
      */
@@ -125,7 +125,7 @@ public class VideoAdSlot implements ADVideoPlayerListener {
             //进入自动暂停状态
             if (canPause) {
                 pauseVideo(true);
-                canPause = false;
+                canPause = false; // 滑动事件过滤
             }
             lastArea = 0;
             mVideoView.setIsComplete(false); // 滑动出50%后标记为从头开始播
@@ -161,7 +161,7 @@ public class VideoAdSlot implements ADVideoPlayerListener {
     }
 
     /**
-     * 实现play层接口
+     * 实现play层接口，从小屏到全屏播放功能
      */
     @Override
     public void onClickFullScreenBtn() {
@@ -172,34 +172,39 @@ public class VideoAdSlot implements ADVideoPlayerListener {
         }
         //获取videoview在当前界面的属性
         Bundle bundle = Utils.getViewProperty(mParentView);
+        // 将播放器从view树种移除
         mParentView.removeView(mVideoView);
+        // 创建全屏播放dialog
         VideoFullDialog dialog = new VideoFullDialog(mContext, mVideoView, mXAdInstance,
                 mVideoView.getCurrentPosition());
         dialog.setListener(new FullToSmallListener() {
             @Override
             public void getCurrentPlayPosition(int position) {
+                // 在全屏视频播放时点击了返回
                 backToSmallMode(position);
             }
 
             @Override
             public void playComplete() {
+                // 全屏播放完的事件回调
                 bigPlayComplete();
             }
         });
         dialog.setViewBundle(bundle); //为Dialog设置播放器数据Bundle对象
         dialog.setSlotListener(mSlotListener);
-        dialog.show();
+        dialog.show();  // 全屏dialog显示出来
     }
 
     private void backToSmallMode(int position) {
+        // 重新添加到View树中
         if (mVideoView.getParent() == null) {
             mParentView.addView(mVideoView);
         }
         mVideoView.setTranslationY(0); //防止动画导致偏离父容器
-        mVideoView.isShowFullBtn(true);
-        mVideoView.mute(true);
-        mVideoView.setListener(this);
-        mVideoView.seekAndResume(position);
+        mVideoView.isShowFullBtn(true); // 显示全屏按钮
+        mVideoView.mute(true); // 小屏静音
+        mVideoView.setListener(this); // 重新设置监听为我们的业务逻辑层
+        mVideoView.seekAndResume(position); // 使播放器跳到指定位置并播放
         canPause = true; // 标为可自动暂停
     }
 
@@ -291,10 +296,12 @@ public class VideoAdSlot implements ADVideoPlayerListener {
         }
     }
 
+    // 获取播放器当前秒数
     private int getPosition() {
         return mVideoView.getCurrentPosition() / SDKConstant.MILLION_UNIT;
     }
 
+    // 获取此视频总时长
     private int getDuration() {
         return mVideoView.getDuration() / SDKConstant.MILLION_UNIT;
     }

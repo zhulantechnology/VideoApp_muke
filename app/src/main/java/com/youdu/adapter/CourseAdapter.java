@@ -104,7 +104,7 @@ public class CourseAdapter extends BaseAdapter {
                     mViewHolder.mInfoView = (TextView) convertView.findViewById(R.id.item_info_view);
                     mViewHolder.mFooterView = (TextView) convertView.findViewById(R.id.item_footer_view);
                     mViewHolder.mShareView = (ImageView) convertView.findViewById(R.id.item_share_view);
-                    //为对应布局创建播放器
+                    //第一步；为对应布局创建视频播放SDK模块
                     mAdsdkContext = new VideoAdContext(mViewHolder.mVieoContentLayout,
                         new Gson().toJson(value), null);
                     mAdsdkContext.setAdResultListener(new AdContextInterface() {
@@ -225,7 +225,7 @@ public class CourseAdapter extends BaseAdapter {
         return convertView;
     }
 
-    //自动播放方法
+    //第二步：自动播放方法
     public void updateAdInScrollView() {
         if (mAdsdkContext != null) {
             mAdsdkContext.updateAdInScrollView();
