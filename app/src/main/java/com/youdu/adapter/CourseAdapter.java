@@ -3,6 +3,7 @@ package com.youdu.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -90,6 +91,7 @@ public class CourseAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         int type = getItemViewType(position);
         final RecommandBodyValue value = (RecommandBodyValue) getItem(position);
+        // 加载布局
         //无tag时
         if (convertView == null) {
             switch (type) {
@@ -105,8 +107,12 @@ public class CourseAdapter extends BaseAdapter {
                     mViewHolder.mFooterView = (TextView) convertView.findViewById(R.id.item_footer_view);
                     mViewHolder.mShareView = (ImageView) convertView.findViewById(R.id.item_share_view);
                     //第一步；为对应布局创建视频播放SDK模块
+                    String tempData = new Gson().toJson(value);
+                   // mAdsdkContext = new VideoAdContext(mViewHolder.mVieoContentLayout,
+                    //    new Gson().toJson(value), null);
+                    Log.e("XXX","TEMPDATA----------------"+ tempData);
                     mAdsdkContext = new VideoAdContext(mViewHolder.mVieoContentLayout,
-                        new Gson().toJson(value), null);
+                            tempData, null);
                     mAdsdkContext.setAdResultListener(new AdContextInterface() {
                         @Override
                         public void onAdSuccess() {

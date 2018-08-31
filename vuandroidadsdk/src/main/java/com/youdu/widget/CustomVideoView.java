@@ -45,32 +45,42 @@ public class CustomVideoView extends RelativeLayout implements View.OnClickListe
      * Constant
      */
     private static final String TAG = "MraidVideoView";
-    private static final int TIME_MSG = 0x01;
-    private static final int TIME_INVAL = 1000;
-    private static final int STATE_ERROR = -1;
-    private static final int STATE_IDLE = 0;
-    private static final int STATE_PLAYING = 1;
-    private static final int STATE_PAUSING = 2;
-    private static final int LOAD_TOTAL_COUNT = 3;
+    private static final int TIME_MSG = 0x01; // 更新时间进步条的消息ID
+    private static final int TIME_INVAL = 1000;  // 是个循环，每隔1S发送一次
+    private static final int STATE_ERROR = -1;  // 播放-错误状态
+    private static final int STATE_IDLE = 0;    // 播放-空闲状态
+    private static final int STATE_PLAYING = 1; // 播放- 播放状态
+    private static final int STATE_PAUSING = 2; // 播放- 暂停状态
+    private static final int LOAD_TOTAL_COUNT = 3; // 加载视频资源的尝试次数，3次
     /**
      * UI
      */
-    private ViewGroup mParentContainer;
-    private RelativeLayout mPlayerView;
-    private TextureView mVideoView;
-    private Button mMiniPlayBtn;
-    private ImageView mFullBtn;
-    private ImageView mLoadingBar;
-    private ImageView mFrameView;
-    private AudioManager audioManager;
-    private Surface videoSurface;
+    private ViewGroup mParentContainer;   // 存放这个视频播放view的父view
+    private RelativeLayout mPlayerView;     // 播放器的这个View，包含播放器和播放器上的一些Btn
+    private TextureView mVideoView;         // 真正播放视频的View
+    private Button mMiniPlayBtn;        // 圆形的播放按钮
+    private ImageView mFullBtn;     // 全屏按钮
+    private ImageView mLoadingBar;   // 三个点，显示在加载的一个动画
+    private ImageView mFrameView;     // 视频没有加载成功时显示的一个错误logo
+    private AudioManager audioManager;   // 音频
+    /**
+     * https://blog.csdn.net/tgww88/article/details/7973476
+     * <Android中的Surface和SurfaceView之我见>
+     * “Handle onto a raw buffer that is being managed by the screen compositor”，
+     * 翻译成中文就是“由屏幕显示内容合成器(screen compositor)所管理的原始缓冲区的句柄”，
+     * Surface中的Canvas成员，是专门用于供程序员画图的场所，就像黑板一样；
+     * 其中的原始缓冲区是用来保存数据的地方；
+     * Surface本身的作用类似一个句柄，得到了这个句柄就可以得到其中的Canvas、原始缓冲区以及其它方面的内容。
+     * Surface是用来管理数据的。（句柄）
+     */
+    private Surface videoSurface;   
 
     /**
      * Data
      */
-    private String mUrl;
-    private String mFrameURI;
-    private boolean isMute;
+    private String mUrl;   // 视频地址url
+    private String mFrameURI;  // 像是加载某张图片的url
+    private boolean isMute;   // 是否静音
     private int mScreenWidth, mDestationHeight;
 
     /**
@@ -85,7 +95,7 @@ public class CustomVideoView extends RelativeLayout implements View.OnClickListe
     private MediaPlayer mediaPlayer;
     private ADVideoPlayerListener listener;  // 事件监听回调
     private ScreenEventReceiver mScreenReceiver;    // 监听屏幕是否锁屏
-    // 每隔1秒发送一个消息事件
+    // 每隔1秒发送一个消息事件,这个Handler是运行在主线程的，更新UI,时间进度条
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -118,7 +128,7 @@ public class CustomVideoView extends RelativeLayout implements View.OnClickListe
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         wm.getDefaultDisplay().getMetrics(dm);
         mScreenWidth = dm.widthPixels;
-        mDestationHeight = (int) (mScreenWidth * SDKConstant.VIDEO_HEIGHT_PERCENT);
+        mDestationHeight = (int) (mScreenWidth * SDKConstant.VIDEO_HEIGHT_PERCENT);  // 横竖屏16:9
     }
 
     private void initView() {
