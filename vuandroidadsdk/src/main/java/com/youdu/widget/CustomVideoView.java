@@ -133,7 +133,9 @@ public class CustomVideoView extends RelativeLayout implements View.OnClickListe
 
     private void initView() {
         LayoutInflater inflater = LayoutInflater.from(this.getContext());
+        // mPlayerView 视频播放器的那个View，包括放的视频和视频上的几个按钮
         mPlayerView = (RelativeLayout) inflater.inflate(R.layout.xadsdk_video_player, this);
+        // mVideoView 真正播放视频流的view
         mVideoView = (TextureView) mPlayerView.findViewById(R.id.xadsdk_player_video_textureView);
         mVideoView.setOnClickListener(this);
         mVideoView.setKeepScreenOn(true);
