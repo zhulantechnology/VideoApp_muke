@@ -325,7 +325,7 @@ public class CustomVideoView extends RelativeLayout implements View.OnClickListe
         mFrameURI = url;
     }
 
-    // 加载我们的视频url
+    // 根据url加载视频
     public void load() {
         if (this.playerState != STATE_IDLE) {
             return;

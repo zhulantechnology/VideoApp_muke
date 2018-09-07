@@ -35,8 +35,8 @@ public class VideoAdSlot implements ADVideoPlayerListener {
     /**
      * Data
      */
-    private AdValue mXAdInstance;
-    private AdSDKSlotListener mSlotListener;
+    private AdValue mXAdInstance;   //将json数据转换成的实体类对象
+    private AdSDKSlotListener mSlotListener; //传递消息到appcontext层
     private boolean canPause = false; //是否可自动暂停标志位
     private int lastArea = 0; //防止将要滑入滑出时播放器的状态改变
 
@@ -56,6 +56,7 @@ public class VideoAdSlot implements ADVideoPlayerListener {
             mVideoView.setFrameLoadListener(frameImageLoadListener);
             mVideoView.setListener(this);
         }
+        // 感觉这个 paddingView 是给mVideoView在没加载的时候有一个黑色的背景，但好像看不出来
         RelativeLayout paddingView = new RelativeLayout(mContext);
         paddingView.setBackgroundColor(mContext.getResources().getColor(android.R.color.black));
         paddingView.setLayoutParams(mVideoView.getLayoutParams());
@@ -202,7 +203,7 @@ public class VideoAdSlot implements ADVideoPlayerListener {
         }
         mVideoView.setTranslationY(0); //防止动画导致偏离父容器
         mVideoView.isShowFullBtn(true); // 显示全屏按钮
-        mVideoView.mute(true); // 小屏静音
+        mVideoView.mute(true); // 小屏静音       
         mVideoView.setListener(this); // 重新设置监听为我们的业务逻辑层
         mVideoView.seekAndResume(position); // 使播放器跳到指定位置并播放
         canPause = true; // 标为可自动暂停

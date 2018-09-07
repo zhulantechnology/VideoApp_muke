@@ -23,4 +23,21 @@ public class AdValue {
     public ArrayList<Monitor> clickMonitor;
     public EMEvent event;
     public String type;
+
+    @Override
+    public String toString() {
+        return "AdValue{" +
+                "resourceID='" + resourceID + '\'' +
+                ", adid='" + adid + '\'' +
+                ", resource='" + resource + '\'' +
+                ", thumb='" + thumb + '\'' +
+                ", startMonitor=" + startMonitor +
+                ", middleMonitor=" + middleMonitor +
+                ", endMonitor=" + endMonitor +
+                ", clickUrl='" + clickUrl + '\'' +
+                ", clickMonitor=" + clickMonitor +
+                ", event=" + event +
+                ", type='" + type + '\'' +
+                '}';
+    }
 }

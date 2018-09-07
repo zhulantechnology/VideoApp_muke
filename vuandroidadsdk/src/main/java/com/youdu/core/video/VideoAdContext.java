@@ -1,6 +1,7 @@
 package com.youdu.core.video;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.ViewGroup;
 
 import com.youdu.activity.AdBrowserActivity;
@@ -33,8 +34,14 @@ public class VideoAdContext implements AdSDKSlotListener {
     public VideoAdContext(ViewGroup parentView, String instance,
                           ADFrameImageLoadListener frameLoadListener) {
         this.mParentView = parentView;
+        /**
+         * 注： 这里instance带来的json数据与类AdValue中并不完全匹配，所以转成AdValue类的实体对象时，
+         *  就会有些对象是null
+         */
         this.mInstance = (AdValue) ResponseEntityToModule.
                 parseJsonToModule(instance, AdValue.class);
+
+       // Log.e("XXX","AD json-obj---content------:"+ this.mInstance.toString());
         this.mFrameLoadListener = frameLoadListener;
         load();
     }
